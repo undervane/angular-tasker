@@ -80,7 +80,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateScrollPosition(position: number) {
-    this.stickyMenu = position > 65
+    this.stickyMenu = position > 58
   }
 
   private buildDaysForMode(mode: CalendarMode) {
@@ -96,7 +96,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     let today = moment()
     return [{
       number: today.format('DD'),
-      day: today.format('ddd')
+      day: today.format('ddd'),
+      event: {
+        name: 'Evento',
+        icon: 'fa-birthday-cake'
+      }
     }]
   }
 
@@ -124,7 +128,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     weekDays.forEach(day => {
       week.push({
         number: day.format('DD'),
-        day: day.format('ddd')
+        day: day.format('ddd'),
+        event: {
+          name: 'Evento',
+          icon: 'fa-birthday-cake'
+        }
       })
     })
 
@@ -152,19 +160,25 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
   // Static schedules, just for testing
   private getSchedules() {
     return [{
-      name: 'Hello',
+      hour: '13:00 - 14:00',
+      name: 'Cumpleaños',
+      icon: 'fa-birthday-cake',
+      description: '',
       time: {
         start: new Date(2019, 2, 16, 13, 0),
         end: new Date(2019, 2, 16, 14, 0)
       }
 
     }, {
-      name: 'Hello',
+      hour: '01:00 - 02:00',
+      name: 'Cumpleaños Sergio',
+      icon: 'fa-birthday-cake',
+      description: 'Casita de Pigu',
       time: {
         start: new Date(2019, 2, 16, 1, 0),
         end: new Date(2019, 2, 16, 2, 0)
       }
     }]
   }
-  
+
 }

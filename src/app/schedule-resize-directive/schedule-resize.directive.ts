@@ -70,13 +70,23 @@ export class ScheduleResizeDirective {
 
     if (offset === 0) return;
 
+    const height = parseFloat(this.el.nativeElement.style.height);
+
+    // Minimum size for schedule
+    if (property === 'height' && height + offset <= 45) return;
+    if (property === 'top' && height - offset <= 45) return;
+
+    // Prevent out of bound schedules
+    if (property === 'top' && this.currentValue + offset <= 0) return;
+    // if (property === 'height' && this.previousPosition + offset >= 420) return;
+
     console.log(`Current ${property}: ${this.currentValue}`)
     console.log(`Update ${property} to: ${this.currentValue + offset}px`)
     
     this.el.nativeElement.style[property] = `${this.currentValue + offset}px`;
 
     if (property === 'top') {
-      this.el.nativeElement.style.height = `${parseFloat(this.el.nativeElement.style.height) - offset}px`;
+      this.el.nativeElement.style.height = `${height - offset}px`;
     }
 
     this.currentValue = parseFloat(this.el.nativeElement.style[property])

@@ -1,26 +1,16 @@
 .navigation {
-    display: flex;
-    flex-direction: row;
-    flex-flow: wrap;
+
     background-color: #e24f4f;
     padding: 10px;
     font-weight: bold;
     border: 0.4px;
     border-style: solid;
     border-color: #e24f4f;
-    max-width: 100%;
+    text-align: center;
 
     .month {
-        padding: 0 10px;
         font-size: 30px;
         color: #ad0202;
-    }
-
-    .fa {
-        font-size: 30px;
-        cursor: pointer;
-        color: #ad0202;
-        padding: 0 10px;
     }
 
     .bars{
@@ -33,7 +23,6 @@
     background-color: #f0f0f0;
     z-index: 1;
     grid-template-columns: 80px repeat(7, 1fr);
-
     width: 100%;
     padding: 0;
     margin: 0;
@@ -58,7 +47,22 @@
     }
 
     .day-event{
-        padding: 20px;
+        background-color: #8ad6b4;
+        cursor: pointer;
+        color: white;
+        border-radius: 5px;
+        width: 90%;
+        height: 90%;
+        padding: 8px;
+        margin: 0px;
+
+        .fas {
+            margin-right: 8px;
+        }
+
+        label{
+            cursor: pointer;
+        }
     }
 
     @media only screen and (max-width: 800px) {
@@ -128,7 +132,7 @@
 }
 
 .menu-sticky{
-    margin-top: 165px;
+    margin-top: 140px;
 }
 
 .calendar-view{
@@ -168,10 +172,13 @@
 .schedule{
     position: relative;
     cursor: pointer;
-    background-color: rgb(230, 191, 163);
+    background-color: #ff9573;
+    color: white;
     border-radius: 5px;
     width: 90%;
-    height: 90%;
+    height: calc(100% - 15px);
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .resizable{
@@ -183,6 +190,30 @@
     &#bottom-resize{
         bottom: 0
     }
+}
+
+.p{
+    padding: 8px;
+    margin: 0px;
+    margin-bottom: 5px;
+    .fas{
+        padding-left: 5px;
+        padding-right: 8px; 
+    }
+    .name{
+        font-weight: bold;
+        padding-top: 5px; 
+        padding-left: 5px; 
+    }
+    .description{
+        padding-top: 5px; 
+        padding-left: 5px; 
+    }
+}
+
+img{
+    width: 20px;
+    color: white;
 }
 
 .draggable{

@@ -26,8 +26,8 @@ export class SchedulePositionDirective {
     const endHour = time.end.getHours();
     const endMinute = time.end.getMinutes();
 
-    style.top = `${startHour * 70}px`
-    style.height = `${(endHour * 70) - startHour * 70}px`
+    style.top = `${startHour * 70.8}px`
+    style.height = `${(endHour * 70.8) - startHour * 70.8}px`
   }
 
 }
