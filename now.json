@@ -2,6 +2,6 @@
     "version": 2,
 	"name": "static",
 	"routes": [
-        { "src": "/.*", "dest": "dist/index.html"}
+        { "src": "/.*", "dest": "dist/angular-tasker/index.html"}
     ]
 }
