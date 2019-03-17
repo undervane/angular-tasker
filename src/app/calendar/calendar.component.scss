@@ -1,3 +1,6 @@
+
+// WIP - Needs refactor
+
 .navigation {
 
     background-color: #e24f4f;
@@ -18,7 +21,8 @@
     }
 }
 
-.days-row {
+#days-row{
+
     display: grid;
     background-color: #f0f0f0;
     z-index: 1;
@@ -35,6 +39,12 @@
         padding:  10px;
     }
 
+    // &.sticky{
+    //     .day-number{
+    //         font-size: 10px;
+    //     }
+    // }
+
     .day-label{
         font-size: 20px;
         font-weight: bold;
@@ -47,14 +57,14 @@
     }
 
     .day-event{
+
         background-color: #8ad6b4;
         cursor: pointer;
         color: white;
         border-radius: 5px;
         width: 90%;
-        height: 90%;
         padding: 8px;
-        margin: 0px;
+        margin-top: 5px;
 
         .fas {
             margin-right: 8px;
@@ -63,14 +73,17 @@
         label{
             cursor: pointer;
         }
+
     }
 
     @media only screen and (max-width: 800px) {
         grid-template-columns: 80px repeat(1, 1fr);
     }
+
 }
 
 .hours-template{
+
     display: grid;
     max-width: 100%;
     grid-template-columns: repeat(1, 1fr);
@@ -87,6 +100,7 @@
         @media only screen and (max-width: 800px) {
             grid-template-columns: 80px repeat(1, 1fr);
         }
+
     }
 
     .cell {
@@ -135,7 +149,7 @@
     margin-top: 140px;
 }
 
-.calendar-view{
+#calendar-view{
     position: relative;
 }
 
@@ -192,10 +206,12 @@
     }
 }
 
-.p{
+.schedule-content{
+
     padding: 8px;
     margin: 0px;
     margin-bottom: 5px;
+
     .fas{
         padding-left: 5px;
         padding-right: 8px; 
@@ -209,6 +225,7 @@
         padding-top: 5px; 
         padding-left: 5px; 
     }
+
 }
 
 img{

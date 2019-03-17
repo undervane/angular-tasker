@@ -1,10 +1,14 @@
 import { Component, OnInit, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
-import * as moment from "moment";
-import { DayType } from '../types/day.type';
-import { CalendarMode } from '../enums/calendar-mode.enum';
-import { ScheduleType } from '../types/schedule.type';
+import { takeWhile, take } from 'rxjs/operators';
+import { CalendarMode } from '../@models/enums/calendar-mode.enum';
+import { DayType } from '../@models/types/day.type';
+import { ScheduleType } from '../@models/types/schedule.type';
+import { getStaticSchedules } from '../@models/static/schedules.static';
+import { AbalinService } from '../services/abalin/abalin.service';
+import { buildWeekFromDate, getHours } from '../@shared/utils/date.utils';
+import { NameDaysType } from '../@models/types/name-days.type';
+import { ScheduleListType } from '../@models/types/schedule-list.type';
 
 @Component({
   selector: 'app-calendar',
@@ -17,29 +21,32 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
   mode: CalendarMode;
 
   days: DayType[];
-  schedules: ScheduleType[];
+  data: ScheduleListType;
   hours: string[];
 
   stickyMenu: boolean;
 
   private _isAlive = true;
 
-  constructor() { }
+  constructor(
+    private readonly _abalinService: AbalinService
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initializeData();
+    this.fetchData();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.subscribeToScroll();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy(): void{
     this._isAlive = false;
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
 
     // TODO: Must optimize resize trigger rate
 
@@ -52,23 +59,38 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  toggleMode() {
+  getEventsForDay(day: DayType, schedules: ScheduleType[]): ScheduleType[] {
 
-    if (window.innerWidth < 800) return;
+    day.date.setHours(23);
 
-    this.mode = this.mode === CalendarMode.WEEK ? CalendarMode.DAY : CalendarMode.WEEK;
-    this.days = this.buildDaysForMode(this.mode)
+    let dayString = day.date.toISOString().slice(0, 10);
+    
+    return schedules && schedules[dayString] ? schedules[dayString].events : null;
+
   }
 
-  private initializeData() {
+  getSchedulesForDay(day: DayType, schedules: ScheduleType[]): ScheduleType[] {
+        
+    day.date.setHours(23);
+
+    let dayString = day.date.toISOString().slice(0, 10);
+    
+    return schedules && schedules[dayString] ? schedules[dayString].schedules : null;
+  }
+
+  private initializeData(): void {
     this.pointer = new Date();
     this.mode = window.innerWidth > 800 ? CalendarMode.WEEK : CalendarMode.DAY;
-    this.hours = this.getHours();
-    this.schedules = this.getSchedules();
+    this.data = getStaticSchedules();
+    this.hours = getHours();
     this.days = this.buildDaysForMode(this.mode);
   }
 
-  private subscribeToScroll() {
+  private fetchData(): void{
+    this._abalinService.getNameDaysForWeek(new Date(), 'es').pipe(take(1)).subscribe(data => this.buildNameDaysEvents(data));
+  }
+
+  private subscribeToScroll(): void {
     fromEvent(window, 'scroll')
       .pipe(
         takeWhile(_ => this._isAlive)
@@ -79,56 +101,34 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
       );
   }
 
-  private updateScrollPosition(position: number) {
+  private updateScrollPosition(position: number): void {
     this.stickyMenu = position > 58
   }
 
-  private buildDaysForMode(mode: CalendarMode) {
+  private buildDaysForMode(mode: CalendarMode): DayType[] {
 
     switch (mode) {
       case 'DAY': return this.buildTodayDate();
-      case 'WEEK': return this.buildCurrentWeek();
+      case 'WEEK': return this.buildWeek();
     }
 
   }
 
-  private buildTodayDate() {
-    let today = moment()
+  private buildTodayDate(): DayType[] {
     return [{
-      number: today.format('DD'),
-      day: today.format('ddd'),
-      event: {
-        name: 'Evento',
-        icon: 'fa-birthday-cake'
-      }
+      date: new Date()
     }]
   }
 
-  private buildCurrentWeek() {
+  private buildWeek(): DayType[] {
 
-    const weekStarts = moment().startOf('isoWeek');
-    const weekEnds = moment().endOf('isoWeek');
+    let week = [];
 
-    let weekDays = [];
-    let day = weekStarts;
-
-    while (day <= weekEnds) {
-      weekDays.push(day);
-      day = day.clone().add(1, 'd');
-    }
-
-    return this.buildWeek(weekDays)
-
-  }
-
-  private buildWeek(weekDays: moment.Moment[]): DayType[] {
-
-    let week = []
+    let weekDays = buildWeekFromDate()
 
     weekDays.forEach(day => {
       week.push({
-        number: day.format('DD'),
-        day: day.format('ddd'),
+        date: day,
         event: {
           name: 'Evento',
           icon: 'fa-birthday-cake'
@@ -136,49 +136,43 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     })
 
-    return week
-
+    return week;
   }
 
-  private getHours(start = 0, end = 23) {
+  // Method below is just for demonstration purposes
+  private buildNameDaysEvents(names: NameDaysType[]): void {
+    
+    names.forEach(day => {
 
-    let hourList = []
+      if (!day.data.name_es) return;
+      
+      let currentYear = new Date().getUTCFullYear();
 
-    for (let hour = start; hour <= end; hour++) {
+      let stringMonth = day.data.month.toString().length === 1 ? '0' + day.data.month : day.data.month.toString();
+      let stringDay = day.data.day.toString().length === 1 ? '0' + day.data.day : day.data.day.toString();
 
-      if (hour >= 0 && hour <= 9) {
-        hourList.push(`0${hour}:00`)
-      } else {
-        hourList.push(`${hour}:00`)
+      const dateKey = `${currentYear}-${stringMonth}-${stringDay}`;
+
+      if (!this.data) return;
+
+      if (!this.data[dateKey]) {
+        this.data[dateKey] = {events: [], schedules: []};
       }
 
-    }
-
-    return hourList
-  }
-
-  // Static schedules, just for testing
-  private getSchedules() {
-    return [{
-      hour: '13:00 - 14:00',
-      name: 'Cumpleaños',
-      icon: 'fa-birthday-cake',
-      description: '',
-      time: {
-        start: new Date(2019, 2, 16, 13, 0),
-        end: new Date(2019, 2, 16, 14, 0)
+      if (!this.data[dateKey].events) {
+        this.data[dateKey].events = [];
       }
 
-    }, {
-      hour: '01:00 - 02:00',
-      name: 'Cumpleaños Sergio',
-      icon: 'fa-birthday-cake',
-      description: 'Casita de Pigu',
-      time: {
-        start: new Date(2019, 2, 16, 1, 0),
-        end: new Date(2019, 2, 16, 2, 0)
+      let dayNameEvent = {
+        name: `Saint ${day.data.name_es.split(',')[0]}`,
+        icon: 'fa-crown',
+        description: '',
+        allDay: true
       }
-    }]
+
+      this.data[dateKey].events.push(dayNameEvent);
+
+    })
   }
 
 }

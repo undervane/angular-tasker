@@ -16,7 +16,7 @@ export class ScheduleResizeDirective {
   constructor(private el: ElementRef) { }
 
   @HostListener('mousedown', ['$event'])
-  onDragStart(event: DragEvent) {
+  onDragStart(event: MouseEvent) {
 
     this.draggingProperty = this.propertyHandler(event)
 
