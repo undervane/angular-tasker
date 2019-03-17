@@ -1,6 +1,7 @@
 {
     "version": 2,
     "name": "angular-tasker",
+    "alias": ["tasker.now.sh"],
     "builds": [
       {
         "src": "package.json",
