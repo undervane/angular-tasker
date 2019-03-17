@@ -33,14 +33,10 @@
 
       <ng-container *ngFor="let schedule of schedules">
 
-          <div [schedulePosition]="schedule.time" class="schedule-wrapper">
-            <div class="schedule">
+          <div scheduleResize [schedulePosition]="schedule.time" class="schedule-wrapper">
+            <div id="schedule-card" class="schedule">
 
-              <div id="top-resize" class="resizable" draggable="true"
-              (dragstart)="onDragStart($event)" 
-              (drag)="onDrag($event, schedule.time)"
-              (dragover)="onDragOver($event)" 
-              (dragend)="onDragEnd($event)"></div>
+              <div id="top-resize" class="resizable"></div>
 
               <p>{{ schedule.name }}</p>
 

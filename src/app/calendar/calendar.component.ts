@@ -166,29 +166,5 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }]
   }
-
-  onDragStart(event: DragEvent) {
-    console.log(`starting`, event);
-    // Hide dragging element
-    (event.target as any).style.opacity = 0;
-  }
-
-  onDrag(event: DragEvent, time: { start: Date, end: Date }) {
-    console.log('dragging', event);
-
-    time.start.setMinutes(time.start.getMinutes() - 30)
-
-    console.log(time.start.getMinutes())
-
-  }
-
-  onDragOver(event: DragEvent) {
-    console.log('drag over', event);
-  }
-
-  onDragEnd(event: DragEvent) {
-    console.log('drag end', event);
-    (event.target as any).style.opacity = 1;
-  }
-
+  
 }
