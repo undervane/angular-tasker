@@ -11,8 +11,12 @@
     <div class="day-label">{{ day.date | date: 'EEE' }}</div>
     <div class="day-number">{{ day.date | date: 'dd' }}</div>
     <div class="day-event" *ngFor="let event of getEventsForDay | memo: day : data">
-      <i class="fas {{ event.icon }} selectable"></i>
-      <label>{{ event.name }}</label>
+      
+      <div class="grid-detail">
+          <i class="fas {{ event.icon }} selectable"></i>
+          <label class="capa">{{ event.name }}</label>
+      </div>
+      
     </div>
   </div>
 

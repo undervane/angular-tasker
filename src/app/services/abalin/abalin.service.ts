@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { buildWeekFromDate } from 'src/app/@shared/utils/date.utils';
 
@@ -8,9 +8,9 @@ import { buildWeekFromDate } from 'src/app/@shared/utils/date.utils';
 })
 export class AbalinService {
 
-  static API_PATH = 'https://api.abalin.net/get'
-  static NAMEDAYS_API = '/namedays'
-
+  static API_PATH = 'https://cors.io/?https://api.abalin.net/get'
+  static NAMEDAYS_API = '/namedays?'
+    
   constructor
   (
     private readonly http: HttpClient
